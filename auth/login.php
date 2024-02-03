@@ -1,63 +1,51 @@
 <?php
+session_start();
 
 $is_invalid = false;
+
+// Check if the "lohs" session variable is set
+$lohs = isset($_SESSION['lohs']) ? $_SESSION['lohs'] : 1;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $mysqli = require __DIR__ . "/db/db.php";
 
-    $sql = sprintf("SELECT * FROM user
-                    WHERE email = '%s'",
-        $mysqli->real_escape_string($_POST["email"]));
+    // ... (rest of your existing code for login)
 
-    $result = $mysqli->query($sql);
+    if($lohs == 1) {
+        // Login form
+        ?>
+        <form method="post">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email"
+                   value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
 
-    $user = $result->fetch_assoc();
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
 
-    if ($user) {
-
-        if (password_verify($_POST["password"], $user["password_hash"])) {
-
-            session_start();
-
-            session_regenerate_id();
-
-            $_SESSION["user_id"] = $user["id"];
-
-            header("Location: index.php");
-            exit;
-        }
+            <button>Log in</button>
+        </form>
+        <?php
+    } else {
+        // Signup form
+        include "signup.html";
     }
-
-    $is_invalid = true;
 }
 
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-</head>
-<body>
-
-<h1>Login</h1>
-
-<?php if ($is_invalid): ?>
+if ($is_invalid): ?>
     <em>Invalid login</em>
 <?php endif; ?>
 
-<form method="post">
-    <label for="email">email</label>
-    <input type="email" name="email" id="email"
-           value="<?= htmlspecialchars($_POST["email"] ?? "") ?>">
+<!-- Toggle between login and signup forms -->
+<a href="?toggle_lohs=1">Switch to <?= ($lohs == 1) ? 'Signup' : 'Login' ?></a>
 
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password">
-
-    <button>Log in</button>
-</form>
+<?php
+// Toggle the "lohs" session variable when the link is clicked
+if (isset($_GET['toggle_lohs'])) {
+    $_SESSION['lohs'] = ($_SESSION['lohs'] == 1) ? 2 : 1;
+}
+?>
 
 </body>
+sfdfdfdfdf
 </html>
