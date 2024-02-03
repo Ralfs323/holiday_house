@@ -5,11 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hotel Website</title>
-  <!-- font awesome cdn link  -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <!-- swiper js cdn link -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-  <!-- custom css link -->
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
   <style>
@@ -33,14 +30,14 @@
       border-radius: 7px;
     }
 
-    /* Extra styles for the cancel button */
+
     .cancelbtn {
       width: auto;
       padding: 10px 18px;
       background-color: green;
     }
 
-    /* Center the image and position the close button */
+
     .imgcontainer {
       text-align: center;
       margin: 24px 0 12px 0;
@@ -61,30 +58,29 @@
       padding-top: 16px;
     }
 
-    /* The Modal (background) */
+
     .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
+      display: none;
+      position: fixed;
+      z-index: 1;
       left: 0;
       top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
       padding-top: 60px;
     }
 
-    /* Modal Content/Box */
+
     .modal-content {
       background-color: #fefefe;
-      margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+      margin: 5% auto 15% auto;
       border: 1px solid #888;
-      width: 80%; /* Could be more or less, depending on screen size */
+      width: 80%;
     }
 
-    /* The Close Button (x) */
     .close {
       position: absolute;
       right: 25px;
@@ -100,7 +96,6 @@
       cursor: pointer;
     }
 
-    /* Add Zoom Animation */
     .animate {
       -webkit-animation: animatezoom 0.6s;
       animation: animatezoom 0.6s
@@ -116,7 +111,6 @@
       to {transform: scale(1)}
     }
 
-    /* Change styles for span and cancel button on extra small screens */
     @media screen and (max-width: 300px) {
       span.psw {
         display: block;
@@ -800,10 +794,8 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 
 <script>
-  // Get the modal
   var modal = document.getElementById('id01');
 
-  // When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
     if (event.target == modal) {
       modal.style.display = "none";
