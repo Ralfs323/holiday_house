@@ -142,14 +142,13 @@
         <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="btn">Login</button>
 
         <div id="id01" class="modal">
-
             <form class="modal-content animate" action="/auth/auth-index.php" method="post">
                 <div class="split-container">
                     <div class="left-half">
                         <div class="img-container">
                             <img src="/images/picture1.jpg" alt="Avatar Image">
                             <div class="overlay-text">
-                                <h2>Welcome Back!</h2>
+                                <h2 id="modal-title">Welcome Back!</h2>
                             </div>
                         </div>
                     </div>
@@ -157,8 +156,43 @@
                         <span onclick="closeModal()" class="close" title="Close Modal">&times;</span>
 
                         <div class="form-container">
-                            <?php include "auth/login.php"; ?>
+                            <div id="login-container">
+                                <?php include "auth/login.html"; ?>
+                            </div>
+                            <div id="register-container" hidden>
+                                <?php include "auth/signup.html"; ?>
+                            </div>
+                            <span id="modal-button" onclick="switchModal()">Already have an account? Login</span>
                         </div>
+
+                        <script>
+							let modal = "login";
+							const loginText = "Already have an account? Login";
+							const registerText = "Don't have an account? Register";
+							const loginTitle = "Welcome back!";
+                            const registerTitle = "Welcome!";
+
+							function switchModal() {
+								const loginContainer = document.getElementById("login-container");
+								const registerContainer = document.getElementById("register-container");
+								const modalButton = document.getElementById("modal-button");
+								const modalTitle = document.getElementById("modal-title");
+
+								if (modal === "login") {
+									loginContainer.hidden = true;
+									registerContainer.hidden = false;
+									modalButton.textContent = loginText;
+									modalTitle.textContent = registerTitle;
+									modal = "register";
+								} else {
+									loginContainer.hidden = false;
+									registerContainer.hidden = true;
+									modalButton.textContent = registerText;
+									modalTitle.textContent = loginTitle;
+									modal = "login";
+								}
+							}
+                        </script>
                     </div>
                 </div>
             </form>
