@@ -34,18 +34,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 if ($is_invalid): ?>
     <em>Invalid login</em>
 <?php endif; ?>
-
-<!--<form method="post">-->
-<!--    <label for="email">email</label>-->
-<!--    <input type="email" name="email" id="email"-->
-<!--           value="--><?php //= htmlspecialchars($_POST["email"] ?? "") ?><!--">-->
-<!---->
-<!--    <label for="password">Password</label>-->
-<!--    <input type="password" name="password" id="password">-->
-<!---->
-<!--    --><?php
-//    include "signup.html";
-//    ?>
-<!---->
-<!--    <button>Log in</button>-->
-<!--</form>-->

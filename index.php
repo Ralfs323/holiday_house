@@ -54,7 +54,9 @@
         .close:hover {
             color: #333;
         }
+        
 
+        input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 66%;
