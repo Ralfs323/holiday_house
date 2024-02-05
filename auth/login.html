@@ -1,22 +1,44 @@
 <form action="process-login.php" method="post" id="signup" novalidate>
     <h1>Login</h1>
 
-    <div>
+    <div class="login_email">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email">
+        <input type="email" class="form-control" id="email" name="email" placeholder="e-mail">
     </div>
 
     <div>
         <label for="password">Password</label>
-        <input type="password" id="password" name="password">
-    </div>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password" aria-describedby="passwordHelpBlock">
 
-    <div>
-        <label for="password_confirmation">Repeat password</label>
-        <input type="password" id="password_confirmation" name="password_confirmation">
     </div>
 
     <button>Login</button>
 </form>
 <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
-<script src="/js/validation.js" defer></script>
+<script src="js/validation.js" defer></script>
+<style>
+    .login_email{
+        margin: 30px 0;
+    }
+
+    input[type=email],
+    input[type=password]{
+        width: 60%;
+        padding:10px;
+        border:0;
+        box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    }
+
+    button{
+        appearance:none;
+        -webkit-appearance:none;
+        padding:10px;
+        border:none;
+        background-color:#3F51B5;
+        color:#fff;
+        font-weight:600;
+        border-radius:5px;
+        width:33%;
+    }
+</style>
+
