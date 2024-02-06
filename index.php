@@ -45,11 +45,13 @@
                         <div class="form-container">
                             <div id="login-container">
                                 <?php include "auth/login.html"; ?>
+                                <span id="modal-button" onclick="switchModal()">Don't have an account? SignUp</span>
+
                             </div>
                             <div id="register-container" hidden>
                                 <?php include "auth/signup.html"; ?>
+                                <span id="modal-button" onclick="switchModal()">Already have an account? Login</span>
                             </div>
-                            <span id="modal-button" onclick="switchModal()">Already have an account? Login</span>
                         </div>
 
                         <script>
