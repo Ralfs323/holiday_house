@@ -1,3 +1,27 @@
+<?php
+session_start();
+
+// Check if user is logged in
+if (isset($_SESSION['user_id'])) {
+    // User is logged in
+    $user_id = $_SESSION['user_id'];
+    // You can perform actions for authenticated users here
+    $buttonText = "Profile";
+    $buttonAction = "profile.php"; // Change "#" to the URL of the user profile page
+} else {
+    // User is not logged in
+    $buttonText = "Login";
+    $buttonAction = "#";
+}
+
+if (isset($_SESSION['signup_success']) && $_SESSION['signup_success'] === true) {
+    echo "<script>alert('Successfully signed up!');</script>";
+    // Unset the session variable to prevent showing the message again on page refresh
+    unset($_SESSION['signup_success']);
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,10 +50,13 @@
         <a href="#review">review</a>
         <a href="#faq">faq</a>
         <a href="#reservation" class="btn"> book now</a>
-        <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="btn">Login</button>
-
+        <?php if (isset($_SESSION['user_id'])) : ?>
+            <a href="<?php echo $buttonAction; ?>" class="btn"><?php echo $buttonText; ?></a>
+        <?php else : ?>
+            <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="btn">Login</button>
+        <?php endif; ?>
         <div id="id01" class="modal">
-            <form class="modal-content animate" action="/auth/auth-index.php" method="post">
+            <form class="modal-content animate" action="index.php" method="post">
                 <div class="split-container">
                     <div class="left-half">
                         <div class="img-container">
@@ -44,44 +71,68 @@
 
                         <div class="form-container">
                             <div id="login-container">
-                                <?php include "auth/login.html"; ?>
-                                <span id="modal-button" onclick="switchModal()">Don't have an account? SignUp</span>
-
+                                <?php include "auth/login.php"; ?>
+                                <span id="modal-login-button" onclick="switchModal()">Don't have an account? SignUp</span>
                             </div>
+
                             <div id="register-container" hidden>
                                 <?php include "auth/signup.html"; ?>
-                                <span id="modal-button" onclick="switchModal()">Already have an account? Login</span>
+                                <span id="modal-signup-button" onclick="switchModal()">Already have an account? Login</span>
                             </div>
                         </div>
 
                         <script>
-							let modal = "login";
-							const loginText = "Already have an account? Login";
-							const registerText = "Don't have an account? Register";
-							const loginTitle = "Welcome back!";
+                            window.addEventListener('click', function(event) {
+                                const modal = document.getElementById('id01');
+                                // Check if the click event occurred outside of the modal content
+                                if (event.target == modal) {
+                                    // If so, close the modal
+                                    closeModal();
+                                }
+                            });
+
+                            // Function to close the modal
+                            function closeModal() {
+                                document.getElementById('id01').style.display = 'none';
+                            }
+
+                            // Function to close the modal when clicking the close button
+                            function closeBtnClick() {
+                                closeModal();
+                            }
+
+                            let modal = "login";
+                            const loginText = "Already have an account? Login";
+                            const registerText = "Don't have an account? SignUp";
+                            const loginTitle = "Welcome back!";
                             const registerTitle = "Welcome!";
 
-							function switchModal() {
-								const loginContainer = document.getElementById("login-container");
-								const registerContainer = document.getElementById("register-container");
-								const modalButton = document.getElementById("modal-button");
-								const modalTitle = document.getElementById("modal-title");
+                            function switchModal() {
+                                const loginContainer = document.getElementById("login-container");
+                                const registerContainer = document.getElementById("register-container");
+                                const loginButton = document.getElementById("modal-login-button");
+                                const signupButton = document.getElementById("modal-signup-button");
+                                const modalTitle = document.getElementById("modal-title");
 
-								if (modal === "login") {
-									loginContainer.hidden = true;
-									registerContainer.hidden = false;
-									modalButton.textContent = loginText;
-									modalTitle.textContent = registerTitle;
-									modal = "register";
-								} else {
-									loginContainer.hidden = false;
-									registerContainer.hidden = true;
-									modalButton.textContent = registerText;
-									modalTitle.textContent = loginTitle;
-									modal = "login";
-								}
-							}
+                                if (modal === "login") {
+                                    loginContainer.hidden = true;
+                                    registerContainer.hidden = false;
+                                    signupButton.textContent = loginText;
+                                    modalTitle.textContent = registerTitle;
+                                    modal = "signup";
+                                } else {
+                                    loginContainer.hidden = false;
+                                    registerContainer.hidden = true;
+                                    loginButton.textContent = registerText;
+                                    modalTitle.textContent = loginTitle;
+                                    modal = "login";
+                                }
+                            }
                         </script>
+
+
+
+
                     </div>
                 </div>
             </form>
@@ -705,8 +756,8 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 
 <!-- end -->
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
+<script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
+<script src="auth/js/validation.js" defer></script>
 <script>
     var modal = document.getElementById('id01');
 

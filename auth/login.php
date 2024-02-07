@@ -1,51 +1,61 @@
 <?php
-//session_start();
-//
-//$is_invalid = false;
-//
-//// Check if the "lohs" session variable is set
-//$lohs = isset($_SESSION['lohs']) ? $_SESSION['lohs'] : 1;
-//
-//if ($_SERVER["REQUEST_METHOD"] === "POST") {
-//
-//    $mysqli = require __DIR__ . "/db/db.php";
-//
-//    // ... (rest of your existing code for login)
-//
-//    if($lohs == 1) {
-//        // Login form
-//        ?>
-<!--        <form method="post">-->
-<!--            <label for="email">Email</label>-->
-<!--            <input type="email" name="email" id="email"-->
-<!--                   value="--><?php //= htmlspecialchars($_POST["email"] ?? "") ?><!--">-->
-<!---->
-<!--            <label for="password">Password</label>-->
-<!--            <input type="password" name="password" id="password">-->
-<!---->
-<!--            <button>Log in</button>-->
-<!--        </form>-->
-<!--        --><?php
-//    } else {
-//        // Signup form
-//        include "signup.html";
-//    }
-//}
-//
-//if ($is_invalid): ?>
-<!--    <em>Invalid login</em>-->
-<?php //endif; ?>
-<!---->
-<!--<!-- Toggle between login and signup forms -->-->
-<!--<a href="?toggle_lohs=1">Switch to --><?php //= ($lohs == 1) ? 'Signup' : 'Login' ?><!--</a>-->
-<!---->
-<?php
-//// Toggle the "lohs" session variable when the link is clicked
-//if (isset($_GET['toggle_lohs'])) {
-//    $_SESSION['lohs'] = ($_SESSION['lohs'] == 1) ? 2 : 1;
-//}
-//?>
-<!---->
-<!--</body>-->
-<!--sfdfdfdfdf-->
-<!--</html>-->
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$is_invalid = false;
+$login_error = '';
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $mysqli = require __DIR__ . "/../db/db.php";
+
+    $email = $mysqli->real_escape_string($_POST["email"]);
+    $password = $_POST["password"];
+
+    // Fetch user from database
+    $sql = "SELECT id, password_hash FROM user WHERE email = ?";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+
+    if ($user && password_verify($password, $user["password_hash"])) {
+        session_regenerate_id();
+        $_SESSION["user_id"] = $user["id"];
+        header("Location: index.php");
+        exit;
+    } else {
+        $login_error = "Invalid email or password";
+        $is_invalid = true;
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+
+<h1>Login</h1>
+
+<?php if ($is_invalid): ?>
+    <p><em><?php echo $login_error; ?></em></p>
+<?php endif; ?>
+
+<form method="post">
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required>
+
+    <button type="submit">Log in</button>
+</form>
+
+</body>
+</html>
