@@ -1,17 +1,47 @@
-    <?php
-
+<?php
 session_start();
 
-if (isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_id"])) {
+    header("Location: /auth/login.php");
+    exit();
+}
 
-    $mysqli = require __DIR__ . "/db/db.php";
+$mysqli = require __DIR__ . "/../db/db.php";
 
-    $sql = "SELECT * FROM user
-            WHERE id = {$_SESSION["user_id"]}";
+if (!($mysqli instanceof mysqli)) {
+    echo "<p>Error: Database connection failed</p>";
+    exit();
+}
 
-    $result = $mysqli->query($sql);
+$sql = "SELECT * FROM user WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
 
-    $user = $result->fetch_assoc();
+if (!$stmt) {
+    echo "<p>Error preparing SQL statement: " . $mysqli->error . "</p>";
+    exit();
+}
+
+$stmt->bind_param("i", $_SESSION["user_id"]);
+
+if (!$stmt->execute()) {
+    echo "<p>Error executing SQL statement: " . $stmt->error . "</p>";
+    $stmt->close();
+    exit();
+}
+
+$result = $stmt->get_result();
+$stmt->close();
+
+if (!$result) {
+    echo "<p>Error: User not found</p>";
+    exit();
+}
+
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    echo "<p>Error: User not found</p>";
+    exit();
 }
 
 ?>
@@ -25,17 +55,8 @@ if (isset($_SESSION["user_id"])) {
 
 <h1>Home</h1>
 
-<?php if (isset($user)): ?>
-
-    <p>Hello <?= htmlspecialchars($user["name"]) ?></p>
-
-    <p><a href="/auth/logout.php">Log out</a></p>
-
-<?php else: ?>
-
-    <p><a href="/auth/login.php">Log in</a> or <a href="/auth/signup.html">sign up</a></p>
-
-<?php endif; ?>
+<p>Hello <?= htmlspecialchars($user["name"]) ?></p>
+<p><a href="/auth/logout.php">Log out</a></p>
 
 </body>
 </html>

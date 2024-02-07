@@ -6,6 +6,12 @@ validation
             rule: "required"
         }
     ])
+    .addField("#surname", [
+        {
+            rule: "required"
+        }
+    ])
+
     .addField("#email", [
         {
             rule: "required"

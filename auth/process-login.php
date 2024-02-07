@@ -1,36 +1,32 @@
 <?php
-session_start();
 
 $is_invalid = false;
+$error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $mysqli = require __DIR__ . "/../db/db.php";
 
-    $mysqli = require __DIR . "/db/db.php";
+    $sql = "SELECT * FROM user WHERE email = ?";
 
-    $sql = sprintf("SELECT * FROM user
-                    WHERE email = '%s'",
-        $mysqli->real_escape_string($_POST["email"]));
+    $stmt = $mysqli->prepare($sql);
 
-    $result = $mysqli->query($sql);
+    $stmt->bind_param("s", $_POST["email"]);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
 
     $user = $result->fetch_assoc();
 
-    if ($user) {
+    if ($user && password_verify($_POST["password"], $user["password_hash"])) {
+        session_regenerate_id();
 
-        if (password_verify($_POST["password"], $user["password_hash"])) {
+        $_SESSION["user_id"] = $user["id"];
 
-            session_regenerate_id();
-
-            $_SESSION["user_id"] = $user["id"];
-
-            header("Location: index.php");
-            exit;
-        }
+        header("Location: login.php");
+        exit;
+    } else {
+        $is_invalid = true;
+        $error_message = 'Invalid email or password.';
     }
-
-    $is_invalid = true;
 }
-
-if ($is_invalid): ?>
-    <em>Invalid login</em>
-<?php endif; ?>
+?>
