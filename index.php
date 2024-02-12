@@ -757,11 +757,10 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 <!-- end -->
 
 <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js" defer></script>
-<script src="auth/js/validation.js" defer></script>
+<script src="/auth/js/validation.js" defer></script>
 <script>
-    var modal = document.getElementById('id01');
-
     window.onclick = function(event) {
+        // Instead, use the modal variable declared in the PHP block
         if (event.target == modal) {
             modal.style.display = "none";
         }
