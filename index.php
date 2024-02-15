@@ -19,8 +19,47 @@ if (isset($_SESSION['signup_success']) && $_SESSION['signup_success'] === true) 
     // Unset the session variable to prevent showing the message again on page refresh
     unset($_SESSION['signup_success']);
 }
-?>
 
+// Check if the user is an admin
+if (isset($_SESSION['user_id'])) {
+    require_once("db/db.php");
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare and bind the SQL statement
+    $stmt = $conn->prepare("SELECT is_admin FROM User WHERE id = ?");
+
+    // Pārbauda, vai sagatavošana bija veiksmīga
+    if ($stmt === false) {
+        die("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param("i", $_SESSION['user_id']); // 'i' indicates the type of the parameter (integer)
+
+    // Execute the statement
+    $stmt->execute();
+
+    // Get the result
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+
+    // Set the is_admin session variable based on the result
+    $_SESSION['is_admin'] = ($is_admin == 1);
+
+    // Close the statement and connection
+    $stmt->close();
+    $conn->close();
+} else {
+    // Handle the case when the user is not logged in
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +91,9 @@ if (isset($_SESSION['signup_success']) && $_SESSION['signup_success'] === true) 
         <a href="#reservation" class="btn"> book now</a>
         <?php if (isset($_SESSION['user_id'])) : ?>
             <a href="<?php echo $buttonAction; ?>" class="btn"><?php echo $buttonText; ?></a>
+            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) : ?>
+                <a href="admin/admin_dashboard.php" class="btn">Admin Dashboard</a>
+            <?php endif; ?>
         <?php else : ?>
             <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="btn">Login</button>
         <?php endif; ?>
@@ -245,166 +287,99 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 
 
 <!-- about -->
-
 <section class="about" id="about">
-
     <div class="row">
-
         <div class="image">
             <img src="images/picture4.jpg" alt="">
         </div>
-
         <div class="content">
             <h3>about us</h3>
-            <p>Located within the Gauja National Park, the largest in Latvia, the stylish, family-run Estere offers self-catering accommodation with free wired internet and private parking. Cēsis Castle is 1.6 km away.
+            <p>
+            <?php
+            include "db/db.php";
 
-                The cottage at Estere, surrounded by greenery, is spacious, air-conditioned and decorated in a modern style featuring rustic elements. There is a flat-screen TV with a DVD player and a bathroom is equipped with a shower. Guests have access to a sauna at a surcharge.</p>
-            <p>Guests have use of a kitchenette which comes with a refrigerator, a stove and a microwave and a dining area is also provided. Barbecue facilities are available in the garden.
+            // Check if connection is successful
+            if ($conn === false) {
+                die("Error: Could not connect to the database. " . mysqli_connect_error());
+            }
 
-                Cēsis Train Station is 2 km away and Žagarkalns and Ozolkalns ski centres are only 800 metres away.
+            // Execute SQL query
+            $sql = "SELECT * FROM about_us";
+            $result = $conn->query($sql);
 
-                Couples particularly like the location — they rated it 9.8 for a two-person trip.</p>
+            // Check if query executed successfully
+            if ($result === false) {
+                die("Error: " . $conn->error);
+            }
+
+            // Check if any rows were returned
+            if ($result->num_rows > 0) {
+                // Output data of each row
+                while($row = $result->fetch_assoc()) {
+                    // Output the content
+                    echo $row["content"];
+                }
+            } else {
+                echo "No content found.";
+            }
+            ?>
+            </p>
         </div>
-
     </div>
-
 </section>
 
 <section class="room" id="room">
-
     <h1 class="heading">prices</h1>
-
     <div class="swiper room-slider">
-
         <div class="swiper-wrapper">
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 85/night</span>
-                    <img src="images/per1.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>for 1 person</h3>
-                    <p></p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+            <?php
+            // Iekļauj datubāzes savienojuma failu
+            require_once("db/db.php");
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 85/night</span>
-                    <img src="images/per2.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>for 2 persons</h3>
-                    <p></p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+            // Izveido savienojumu ar datubāzi
+            $conn = new mysqli($servername, $username, $password, $dbname);
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 98/night</span>
-                    <img src="images/per3.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>for 3 persons</h3>
-                    <p></p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+            // Pārbauda savienojuma veiksmīgumu
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 120/night</span>
-                    <img src="images/per4.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>for 4 persons</h3>
-                    <p></p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+            // Izgūst datus no datubāzes
+            $sql = "SELECT price, description, image FROM RoomPrices";
+            $result = $conn->query($sql);
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 60/night</span>
-                    <img src="images/hottub.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>Hot tub</h3>
-                    <p>EXTRA</p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+            if ($result->num_rows > 0) {
+                // Izvada datus uz HTML
+                while($row = $result->fetch_assoc()) {
+                    echo '<div class="swiper-slide slide">';
+                    echo '<div class="image">';
+                    echo '<span class="price">€ ' . $row["price"] . '/night</span>';
+                    echo '<img src="' . $row["image"] . '" alt="">';
+                    echo '<a href="#" class="fas fa-shopping-cart"></a>';
+                    echo '</div>';
+                    echo '<div class="content">';
+                    echo '<h3>' . $row["description"] . '</h3>';
+                    echo '<p></p>';
+                    echo '<div class="stars">';
 
-            <div class="swiper-slide slide">
-                <div class="image">
-                    <span class="price">€ 60/night</span>
-                    <img src="images/sauna.jpg" alt="">
-                    <a href="#" class="fas fa-shopping-cart"></a>
-                </div>
-                <div class="content">
-                    <h3>Sauna</h3>
-                    <p>EXTRA</p>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <a href="#" class="btn">book now</a>
-                </div>
-            </div>
+                    echo '</div>';
+                    echo '<a href="#" class="btn">book now</a>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+            } else {
+                echo "0 results";
+            }
+            $conn->close();
+            ?>
+
 
         </div>
-
         <div class="swiper-pagination"></div>
-
     </div>
-
 </section>
+
 
 <!-- end -->
 
@@ -445,53 +420,40 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 
         <div class="swiper-wrapper">
 
-            <div class="swiper-slide slide">
-                <img src="images/gal1.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
+            <?php
+            // Pievieno datubāzes pieslēgumu failam
+            include "db/db.php";
 
-            <div class="swiper-slide slide">
-                <img src="images/gal2.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
+            // Izgūst attēlu informāciju no datubāzes
+            $sql_select = "SELECT * FROM Gallery";
+            $result = $conn->query($sql_select);
 
-            <div class="swiper-slide slide">
-                <img src="images/gal3.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
+            // Pārbauda, vai ir iegūti rezultāti
+            if ($result && $result->num_rows > 0) {
+                // Iterē cauri katram rindiņai un attēlo attēlu HTML
+                while($row = $result->fetch_assoc()) {
+                    echo '<div class="swiper-slide slide">';
+                    echo '<img src="' . $row["image"] . '" alt="">';
+                    echo '<div class="icon">';
+                    echo '<i class="fas fa-magnifying-glass-plus"></i>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+            } else {
+                // Ja nav attēlu, izvada kļūdas ziņojumu
+                echo "No images found.";
+            }
 
-            <div class="swiper-slide slide">
-                <img src="images/gal4.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <img src="images/gal5.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <img src="images/gal6.jpg" alt="">
-                <div class="icon">
-                    <i class="fas fa-magnifying-glass-plus"></i>
-                </div>
-            </div>
+            // Atbrīvo rezultātus un aizver datubāzes savienojumu
+            $conn->close();
+            ?>
 
         </div>
 
     </div>
 
 </section>
+
 
 <!-- end -->
 
@@ -502,132 +464,50 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
     <div class="swiper review-slider">
         <div class="swiper-wrapper">
 
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>„Lieliska vieta, ļoti mājīga un sakopta. Kamīns, baļļa, tējas&kafijas&medus.“</p>
-                <div class="user">
-                    <img src="images/pic-1.png" alt="">
-                    <div class="user-info">
-                        <h3>Alvis</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+            include "db/db.php";
+            // Izgūst visas atsauksmes no datubāzes
+            $sql_select_reviews = "SELECT * FROM Reviews WHERE status = 'approved'";
+            $result_reviews = $conn->query($sql_select_reviews);
 
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>
-                    Apkārtne un pats namiņš ļoti sakopts un skaists. Padomāts arī par bērniem (pieejams mazais podiņš, rotaļu zona, grāmatas, pagalmā rotaļu laukumiņš)
-                    virtuve praktiski aprīkota ar visu nepieciešamo.
-                    Ja labs laiks, tad pagalmā var atpūsties. Mašīnai vieta aiz sētas.
-                    Mums tur ļoti patīk.!</p>
-                <div class="user">
-                    <img src="images/pic-2.png" alt="">
-                    <div class="user-info">
-                        <h3>Sintija</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
+            // Pārbauda, vai ir iegūti rezultāti
+            if ($result_reviews && $result_reviews->num_rows > 0) {
+                // Iterē cauri katram rezultātam un izvada atbilstošos HTML elementus
+                while($row_review = $result_reviews->fetch_assoc()) {
+                    ?>
+                    <div class="swiper-slide slide">
+                        <h2 class="heading">client's review</h2>
+                        <i class="fas fa-quote-right"></i>
+                        <p><?php echo $row_review['review_text']; ?></p>
+                        <div class="user">
+                            <img src="images/<?php echo $row_review['user_image']; ?>" alt="">
+                            <div class="user-info">
+                                <h3><?php echo $row_review['user_name']; ?></h3>
+                                <div class="stars">
+                                    <?php
+                                    // Izvada zvaigznītes, atkarībā no vērtējuma
+                                    for ($i = 1; $i <= $row_review['rating']; $i++) {
+                                        echo '<i class="fas fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>Brīnišķiga vieta, brīnišķīgi saimnieki, lieliska vieta un atmosfēra. Jutāmies ļoti gaidīti, viss bija tīrs un sakopts!
-                    Mājiņā bija viss, kas nepieciešams atpūtai, padomāts pat par vismazāko sīkumu. Noteikti atgriezīsimies! ❤️</p>
-                <div class="user">
-                    <img src="images/pic-3.png" alt="">
-                    <div class="user-info">
-                        <h3>Aldis</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>
-                    Mums patika pilnīgi viss - gan mājiņa, gan brīnišķīgais ziedošais un tumsā skaisti izgaismotais dārzs, gan burbuļkubls ar LED gaismām... Īpaši jāatzīmē saimnieku sarūpētie dažādu izmēru dvieļi (ar lielu rezervi) un halāti.
-                    Virtuvē - uz galda vāzē ziedi, skaisti trauki un glāzes (arī šampanieša), kafija, tēja, pat medus. Atpūtas un guļamzonā - ērtas gultas, pledi, rezerves spilveni un segas. Siltu omulību radīja iekurtais kamīns. Mēs izbaudījām patiešām brīnišķīgu atpūtu!</p>
-                <div class="user">
-                    <img src="images/pic-4.png" alt="">
-                    <div class="user-info">
-                        <h3>Ligita</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>Iekārtojums,atmosfēra,...sauna,kubls...vienkārši fantastiski. Noteikti brauksim vēl.</p>
-                <div class="user">
-                    <img src="images/pic-5.png" alt="">
-                    <div class="user-info">
-                        <h3>Kaspars</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide">
-                <h2 class="heading">client's review</h2>
-                <i class="fas fa-quote-right"></i>
-                <p>Brīnišķīga, klusa vieta, laipni un atsaucīgi saimnieki. daudzas izklaides iespējas, 1min attālumā veikals</p>
-                <div class="user">
-                    <img src="images/pic-6.png" alt="">
-                    <div class="user-info">
-                        <h3>Evija</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <?php
+                }
+            } else {
+                // Ja nav atsauksmju, izvada paziņojumu
+                echo '<p>No reviews found.</p>';
+            }
+            ?>
 
         </div>
         <div class="swiper-pagination"></div>
     </div>
 
 </section>
+
 
 <!-- end -->
 
@@ -760,7 +640,6 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 <script src="/auth/js/validation.js" defer></script>
 <script>
     window.onclick = function(event) {
-        // Instead, use the modal variable declared in the PHP block
         if (event.target == modal) {
             modal.style.display = "none";
         }

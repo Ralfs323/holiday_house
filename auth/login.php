@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = $_POST["password"];
 
     // Fetch user from database
-    $sql = "SELECT id, password_hash FROM user WHERE email = ?";
+    $sql = "SELECT id, password_hash, is_admin FROM user WHERE email = ?";
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -21,10 +21,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $user = $result->fetch_assoc();
 
     if ($user && password_verify($password, $user["password_hash"])) {
-        session_regenerate_id();
-        $_SESSION["user_id"] = $user["id"];
-        header("Location: index.php");
-        exit;
+        if ($user["is_admin"] == 1) { // Check if the user is an admin
+            session_regenerate_id();
+            $_SESSION["user_id"] = $user["id"];
+            header("Location: ../admin/admin_dashboard.php"); // Redirect to admin dashboard
+            exit;
+        } else {
+            session_regenerate_id();
+            $_SESSION["user_id"] = $user["id"];
+            header("Location: index.php");
+            exit;
+        }
     } else {
         $login_error = "Invalid email or password";
         $is_invalid = true;
