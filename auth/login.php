@@ -21,17 +21,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $user = $result->fetch_assoc();
 
     if ($user && password_verify($password, $user["password_hash"])) {
-        if ($user["is_admin"] == 1) { // Check if the user is an admin
-            session_regenerate_id();
-            $_SESSION["user_id"] = $user["id"];
-            header("Location: ../admin/admin_dashboard.php"); // Redirect to admin dashboard
-            exit;
+        session_regenerate_id();
+        $_SESSION["user_id"] = $user["id"];
+
+        // Set is_admin session variable if the user is an admin
+        if ($user["is_admin"] == 1) {
+            $_SESSION["is_admin"] = true;
+            header("Location: index.php"); // Redirect to admin dashboard
         } else {
-            session_regenerate_id();
-            $_SESSION["user_id"] = $user["id"];
-            header("Location: index.php");
-            exit;
+            $_SESSION["is_admin"] = false;
+            header("Location: index.php"); // Redirect to regular user page
         }
+        exit;
     } else {
         $login_error = "Invalid email or password";
         $is_invalid = true;
