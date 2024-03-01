@@ -26,7 +26,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 </head>
 <body>
 <div class="container">
-    <a href="/auth/logout.php">Logout</a>
+    <a href="<?php echo isset($_SESSION['user_id']) ? '/auth/logout.php' : '/prakse-holiday_house/admin/admin_dashboard.php'; ?>">Logout</a>
 
     <h1>Admin Dashboard</h1>
     <nav>
