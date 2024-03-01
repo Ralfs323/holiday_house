@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <form method="post">
     <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
+    <input type="email" name="email" id="email" autocomplete="email" required>
 
     <label for="password">Password:</label>
     <input type="password" name="password" id="password" required>
