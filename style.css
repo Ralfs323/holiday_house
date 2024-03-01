@@ -170,6 +170,8 @@ input[type="password"] {
     border: 1px solid #ccc;
     box-sizing: border-box;
     border-radius: 4px;
+    text-transform: none;
+
 }
 
 .split-container {
