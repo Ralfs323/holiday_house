@@ -1,5 +1,5 @@
 <?php
-include "../../db/db.php";
+include "../db/db.php";
 session_start();
 
 // Pārbaudām, vai lietotājs ir autentificējies
@@ -21,9 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["review_id"]) && isset(
     $action = $_POST["action"];
 
     // Atjaunot atsauksmes statusu datubāzē
-    $sql_update_review = "UPDATE Reviews SET status = '$action' WHERE id = $review_id";
+    $sql_update_review = "UPDATE Reviews SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql_update_review);
+    $stmt->bind_param("si", $action, $review_id);
 
-    if ($conn->query($sql_update_review) === TRUE) {
+    if ($stmt->execute()) {
         $success_message = "Review status updated successfully";
     } else {
         $error_message = "Error updating review status: " . $conn->error;
@@ -76,9 +78,9 @@ $result_reviews = $conn->query($sql_select_reviews);
                     <form method="post">
                         <input type="hidden" name="review_id" value="<?php echo $row_review["id"]; ?>">
                         <select name="action">
-                            <option value="pending">Pending</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
+                            <option value="pending" <?php if ($row_review["status"] === "pending") echo "selected"; ?>>Pending</option>
+                            <option value="approved" <?php if ($row_review["status"] === "approved") echo "selected"; ?>>Approved</option>
+                            <option value="rejected" <?php if ($row_review["status"] === "rejected") echo "selected"; ?>>Rejected</option>
                         </select>
                         <button type="submit">Update Status</button>
                     </form>

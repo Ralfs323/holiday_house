@@ -31,10 +31,12 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     <h1>Admin Dashboard</h1>
     <nav>
         <ul>
-            <li><a href="options/admin_reviews.php">Admin Reviews</a></li>
-            <li><a href="options/admin_content.php">Admin content</a></li>
-            <li><a href="options/admin_prices.php">Admin Prices</a></li>
-            <li><a href="options/admin_gallery.php">Admin Gallery</a></li>
+            <li><a href="admin_reviews.php">Admin Reviews</a></li>
+            <li><a href="content.php">Content</a></li>
+            <li><a href="add_price_form.php">Prices</a></li>
+            <li><a href="add_image.php">Add image</a></li>
+            <li><a href="delete_image.php">Delete image</a></li>
+
 
         </ul>
     </nav>
