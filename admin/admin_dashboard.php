@@ -27,6 +27,7 @@ if(isset($_GET['page'])) {
 </head>
 <body>
 <div class="container">
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <h1>Admin Panel</h1>
@@ -39,6 +40,10 @@ if(isset($_GET['page'])) {
                 <li><a href="?page=add_price_form.php">Prices</a></li>
                 <li><a href="?page=add_image.php">Add image</a></li>
                 <li><a href="?page=delete_image.php">Delete image</a></li>
+                <li><a href="/index.php">Main page</a></li>
+                <li><a href="/auth/logout.php">Log out</a></li>
+
+
             </ul>
         </nav>
     </aside>
@@ -47,6 +52,7 @@ if(isset($_GET['page'])) {
             <?php include $page; ?>
         </div>
     </main>
+
 </div>
 </body>
 </html>
