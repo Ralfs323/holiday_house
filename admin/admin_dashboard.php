@@ -26,6 +26,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 </head>
 <body>
 <div class="container">
+<<<<<<< Updated upstream
     <a href="<?php echo isset($_SESSION['user_id']) ? '/auth/logout.php' : '/prakse-holiday_house/admin/admin_dashboard.php'; ?>">Logout</a>
 
     <h1>Admin Dashboard</h1>
@@ -39,6 +40,31 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
         </ul>
     </nav>
 
+=======
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>Admin Panel</h1>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="?page=admin_default.php">Main Dashboard</a></li>
+                <li><a href="?page=admin_reviews.php">Admin Reviews</a></li>
+                <li><a href="?page=content.php">Content</a></li>
+                <li><a href="?page=add_price_form.php">Prices</a></li>
+                <li><a href="?page=add_image.php">Add image</a></li>
+                <li><a href="?page=delete_image.php">Delete image</a></li>
+                <li><a href="/index.php">Main page</a></li>
+                <li><a href="/auth/logout.php">Log out</a></li>
+
+            </ul>
+        </nav>
+    </aside>
+    <main class="content">
+        <div id="dynamic-content">
+            <?php include $page; ?>
+        </div>
+    </main>
+>>>>>>> Stashed changes
 </div>
 </body>
 </html>
