@@ -31,7 +31,8 @@ if ($result && $result->num_rows > 0) {
 <h2>Update Content:</h2>
 <form method="post" action="update_content.php">
     <label for="new_content">New Content:</label><br>
-    <textarea id="new_content" name="new_content" rows="4" cols="50"></textarea><br>
+    <!-- Ievietojam esošo saturu kā vērtību textarea elementā -->
+    <textarea id="new_content" name="new_content" rows="4" cols="50"><?php echo htmlspecialchars($existing_content); ?></textarea><br>
     <input type="submit" value="Update Content">
 </form>
 </body>

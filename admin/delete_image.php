@@ -1,6 +1,5 @@
 <?php
 include "../db/db.php";
-session_start();
 
 // Pārbaudām, vai lietotājs ir autentificējies
 if (!isset($_SESSION['user_id'])) {

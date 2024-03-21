@@ -1,26 +1,25 @@
 <?php
 include "../db/db.php";
-session_start();
+include "manage_reviews.php";
 
-// Pārbaudām, vai lietotājs ir autentificējies
+// Check if the user is authenticated
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /auth/login.php"); // Ja lietotājs nav autentificējies, novirzīt uz autentifikācijas lapu
+    header("Location: /auth/login.php");
     exit;
 }
 
-// Pārbaudām, vai lietotājs ir administrators
+// Check if the user is an administrator
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // Ja lietotājs nav administrators, novirzīt uz kļūdas lapu vai citu atbilstošu vietni
     header("Location: /error.php");
     exit;
 }
 
-// Ja forma ir nosūtīta, pārbaudām un apstrādām atsauksmes statusa maiņas
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["review_id"]) && isset($_POST["action"])) {
     $review_id = $_POST["review_id"];
     $action = $_POST["action"];
 
-    // Atjaunot atsauksmes statusu datubāzē
+    // Update review status in the database
     $sql_update_review = "UPDATE Reviews SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($sql_update_review);
     $stmt->bind_param("si", $action, $review_id);
@@ -28,13 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["review_id"]) && isset(
     if ($stmt->execute()) {
         $success_message = "Review status updated successfully";
     } else {
-        $error_message = "Error updating review status: " . $conn->error;
+        $error_message = "Error updating review status: " . $stmt->error;
     }
 }
 
-// Izgūstam visas atsauksmes no datubāzes
+// Retrieve reviews from the database
 $sql_select_reviews = "SELECT * FROM Reviews";
 $result_reviews = $conn->query($sql_select_reviews);
+
+// Check for database errors
+if (!$result_reviews) {
+    $error_message = "Error retrieving reviews: " . $conn->error;
+}
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +51,6 @@ $result_reviews = $conn->query($sql_select_reviews);
 </head>
 <body>
 <div class="container">
-    <a href="/auth/logout.php">Logout</a>
     <h1>Admin Reviews</h1>
 
     <?php if(isset($success_message)): ?>
@@ -67,26 +70,30 @@ $result_reviews = $conn->query($sql_select_reviews);
             <th>Status</th>
             <th>Actions</th>
         </tr>
-        <?php while($row_review = $result_reviews->fetch_assoc()): ?>
-            <tr>
-                <td><?php echo $row_review["id"]; ?></td>
-                <td><?php echo $row_review["review_text"]; ?></td>
-                <td><?php echo $row_review["rating"]; ?></td>
-                <td><?php echo $row_review["user_name"]; ?></td>
-                <td><?php echo $row_review["status"]; ?></td>
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="review_id" value="<?php echo $row_review["id"]; ?>">
-                        <select name="action">
-                            <option value="pending" <?php if ($row_review["status"] === "pending") echo "selected"; ?>>Pending</option>
-                            <option value="approved" <?php if ($row_review["status"] === "approved") echo "selected"; ?>>Approved</option>
-                            <option value="rejected" <?php if ($row_review["status"] === "rejected") echo "selected"; ?>>Rejected</option>
-                        </select>
-                        <button type="submit">Update Status</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endwhile; ?>
+        <?php if ($result_reviews->num_rows > 0): ?>
+            <?php while($row_review = $result_reviews->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo $row_review["id"]; ?></td>
+                    <td><?php echo $row_review["review_text"]; ?></td>
+                    <td><?php echo $row_review["rating"]; ?></td>
+                    <td><?php echo $row_review["user_name"]; ?></td>
+                    <td><?php echo $row_review["status"]; ?></td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="review_id" value="<?php echo $row_review["id"]; ?>">
+                            <select name="action">
+                                <option value="pending" <?php if ($row_review["status"] === "pending") echo "selected"; ?>>Pending</option>
+                                <option value="approved" <?php if ($row_review["status"] === "approved") echo "selected"; ?>>Approved</option>
+                                <option value="rejected" <?php if ($row_review["status"] === "rejected") echo "selected"; ?>>Rejected</option>
+                            </select>
+                            <button type="submit">Update Status</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="6">No reviews found</td></tr>
+        <?php endif; ?>
     </table>
 </div>
 </body>

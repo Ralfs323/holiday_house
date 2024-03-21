@@ -102,7 +102,7 @@ if (isset($_SESSION['user_id'])) {
                 <div class="split-container">
                     <div class="left-half">
                         <div class="img-container">
-                            <img src="/images/picture1.jpg" alt="Avatar Image">
+                            <img src="/admin/images/picture1.jpg" alt="Avatar Image">
                             <div class="overlay-text">
                                 <h2 id="modal-title">Welcome Back!</h2>
                             </div>
@@ -199,21 +199,21 @@ if (isset($_SESSION['user_id'])) {
 
         <div class="swiper-wrapper">
 
-            <div class="swiper-slide slide" style="background: url(images/picture1.jpg) no-repeat;">
+            <div class="swiper-slide slide" style="background: url(admin/images/picture1.jpg) no-repeat;">
                 <div class="content">
                     <h3>it's where dreams come true</h3>
                     <a href="#" class="btn"> visit our offer</a>
                 </div>
             </div>
 
-            <div class="swiper-slide slide" style="background: url(images/picture2.jpg) no-repeat;">
+            <div class="swiper-slide slide" style="background: url(admin/images/picture2.jpg) no-repeat;">
                 <div class="content">
                     <h3>it's where dreams come true</h3>
                     <a href="#" class="btn"> visit our offer</a>
                 </div>
             </div>
 
-            <div class="swiper-slide slide" style="background: url(images/picture3.jpg) no-repeat;">
+            <div class="swiper-slide slide" style="background: url(admin/images/picture3.jpg) no-repeat;">
                 <div class="content">
                     <h3>it's where dreams come true</h3>
                     <a href="#" class="btn"> visit our offer</a>
@@ -290,7 +290,7 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 <section class="about" id="about">
     <div class="row">
         <div class="image">
-            <img src="images/picture4.jpg" alt="">
+            <img src="admin/images/picture4.jpg" alt="">
         </div>
         <div class="content">
             <h3>about us</h3>
@@ -390,17 +390,17 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
     <div class="box-container">
 
         <div class="box">
-            <img src="images/service1.png" alt="">
+            <img src="admin/images/service1.png" alt="">
             <h3>nearby swimming spots</h3>
         </div>
 
         <div class="box">
-            <img src="images/service2.png" alt="">
+            <img src="admin/images/service2.png" alt="">
             <h3>breakfest</h3>
         </div>
 
         <div class="box">
-            <img src="images/service3.png" alt="">
+            <img src="admin/images/service3.png" alt="">
             <h3>nearby shop</h3>
         </div>
 
@@ -520,7 +520,7 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
     <div class="row">
 
         <div class="image">
-            <img src="images/FAQs.gif" alt="">
+            <img src="admin/images/FAQs.gif" alt="">
         </div>
 
         <div class="content">
