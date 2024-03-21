@@ -1,6 +1,5 @@
 <?php
 include "../db/db.php";
-session_start();
 
 // Pārbaudām, vai lietotājs ir autentificējies
 if (!isset($_SESSION['user_id'])) {
@@ -38,3 +37,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["gallery_image"]["name
     <input type="file" id="gallery_image" name="gallery_image"><br>
     <input type="submit" value="Add Image">
 </form>
+

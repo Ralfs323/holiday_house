@@ -484,7 +484,7 @@ img {
 /* review */
 
 .review{
-    background-image: url("images/faq.jpg");
+    background-image: url("admin/images/faq.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;

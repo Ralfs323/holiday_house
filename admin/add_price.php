@@ -1,39 +1,44 @@
 <?php
 include "../db/db.php";
-session_start();
 
-// Pārbaudām, vai lietotājs ir autentificējies
-if (!isset($_SESSION['user_id'])) {
-    header("Location: /auth/login.php"); // Ja lietotājs nav autentificējies, novirzīt uz autentifikācijas lapu
-    exit;
-}
-
-// Pārbaudām, vai lietotājs ir administrators
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // Ja lietotājs nav administrators, novirzīt uz kļūdas lapu vai citu atbilstošu vietni
-    header("Location: /error.php");
-    exit;
-}
+$error_message = $success_message = '';
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if variables are defined and obtained from the form
-    if (isset($_POST["price"]) && isset($_POST["description"]) && isset($_FILES["image"]["name"])) {
-        // Get data from form
+    if (isset($_POST["price"], $_POST["description"], $_FILES["image"]["name"])) {
+        // Sanitizējam ievades datus
         $price = $_POST["price"];
         $description = $_POST["description"];
 
-        // Upload image file
-        $target_dir = "../images/";
+        // Failu augšupielāde
+        $target_dir = "admin/images/";
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
-        move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
+        $uploadOk = 1;
 
-        // Insert data into database
-        $sql_insert = "INSERT INTO RoomPrices (price, description, image) VALUES ('$price', '$description', '$target_file')";
-        if ($conn->query($sql_insert) === TRUE) {
-            $success_message = "New room price added successfully";
-        } else {
-            $error_message = "Error adding room price: " . $conn->error;
+        // Pārbaudām, vai fails ir attiecīgā formāta un izmēra
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif" ) {
+            $error_message = "Only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+
+        // Pārbaudām, vai fails tiek augšupielādēts pareizi
+        if ($uploadOk) {
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                // Insert data into database
+                $sql_insert = "INSERT INTO RoomPrices (price, description, image) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($sql_insert);
+                $stmt->bind_param("dss", $price, $description, $target_file);
+                if ($stmt->execute()) {
+                    $success_message = "New room price added successfully";
+                } else {
+                    $error_message = "Error adding room price: " . $stmt->error;
+                }
+            } else {
+                $error_message = "Error uploading file";
+            }
         }
     } else {
         $error_message = "Please fill in all required fields";

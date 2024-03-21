@@ -31,4 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["new_content"])) {
         $error_message = "Error updating content: " . $conn->error;
     }
 }
+
+header("Location: admin_dashboard.php")
 ?>
