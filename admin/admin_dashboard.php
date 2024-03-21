@@ -1,18 +1,19 @@
 <?php
-include "../db/db.php";
 session_start();
 
-// Pārbaudām, vai lietotājs ir autentificējies
-if (!isset($_SESSION['user_id'])) {
-    header("Location: /auth/login.php"); // Ja lietotājs nav autentificējies, novirzīt uz autentifikācijas lapu
+include_once "../db/db.php";
+
+// Pārbaudām, vai lietotājs ir autentificējies un vai ir administrators
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    header("Location: /auth/login.php"); // Ja lietotājs nav autentificējies vai nav administrators, novirzīt uz autentifikācijas lapu
     exit;
 }
 
-// Pārbaudām, vai lietotājs ir administrators
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // Ja lietotājs nav administrators, novirzīt uz kļūdas lapu vai citu atbilstošu vietni
-    header("Location: /error.php");
-    exit;
+// Iekļaujam atbilstošu lapu, kuru izvēlēsies administrators
+if(isset($_GET['page'])) {
+    $page = $_GET['page'];
+} else {
+    $page = 'admin_default.php'; // Norādiet noklusēto lapu, ja nav norādīta cita
 }
 ?>
 
@@ -26,21 +27,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 </head>
 <body>
 <div class="container">
-<<<<<<< Updated upstream
-    <a href="<?php echo isset($_SESSION['user_id']) ? '/auth/logout.php' : '/prakse-holiday_house/admin/admin_dashboard.php'; ?>">Logout</a>
 
-    <h1>Admin Dashboard</h1>
-    <nav>
-        <ul>
-            <li><a href="options/admin_reviews.php">Admin Reviews</a></li>
-            <li><a href="options/admin_content.php">Admin content</a></li>
-            <li><a href="options/admin_prices.php">Admin Prices</a></li>
-            <li><a href="options/admin_gallery.php">Admin Gallery</a></li>
-
-        </ul>
-    </nav>
-
-=======
     <aside class="sidebar">
         <div class="sidebar-header">
             <h1>Admin Panel</h1>
@@ -56,6 +43,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                 <li><a href="/index.php">Main page</a></li>
                 <li><a href="/auth/logout.php">Log out</a></li>
 
+
             </ul>
         </nav>
     </aside>
@@ -64,7 +52,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
             <?php include $page; ?>
         </div>
     </main>
->>>>>>> Stashed changes
+
 </div>
 </body>
 </html>

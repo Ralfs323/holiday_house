@@ -170,6 +170,8 @@ input[type="password"] {
     border: 1px solid #ccc;
     box-sizing: border-box;
     border-radius: 4px;
+    text-transform: none;
+
 }
 
 .split-container {
@@ -482,7 +484,7 @@ img {
 /* review */
 
 .review{
-    background-image: url("images/faq.jpg");
+    background-image: url("admin/images/faq.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
