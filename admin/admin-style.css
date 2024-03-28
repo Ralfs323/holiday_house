@@ -57,3 +57,20 @@ body {
     flex-grow: 1;
     padding: 20px;
 }
+
+#calendar {
+    font-family: Arial, sans-serif;
+}
+
+.calendar-day {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    border: 1px solid #ccc;
+}
+
+.reserved {
+    background-color: #FFCCCC;
+}

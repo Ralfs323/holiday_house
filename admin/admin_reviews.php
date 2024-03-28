@@ -2,15 +2,9 @@
 include "../db/db.php";
 include "manage_reviews.php";
 
-// Check if the user is authenticated
-if (!isset($_SESSION['user_id'])) {
-    header("Location: /auth/login.php");
-    exit;
-}
-
-// Check if the user is an administrator
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    header("Location: /error.php");
+// Pārbaudām, vai lietotājs ir autentificējies un ir administrators
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    header("Location: /auth/login.php"); // Ja lietotājs nav autentificējies vai nav administrators, novirzīt uz autentifikācijas lapu
     exit;
 }
 

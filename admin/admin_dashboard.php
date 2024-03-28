@@ -42,8 +42,6 @@ if(isset($_GET['page'])) {
                 <li><a href="?page=delete_image.php">Delete image</a></li>
                 <li><a href="/index.php">Main page</a></li>
                 <li><a href="/auth/logout.php">Log out</a></li>
-
-
             </ul>
         </nav>
     </aside>

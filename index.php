@@ -16,9 +16,10 @@ if (isset($_SESSION['user_id'])) {
 
 if (isset($_SESSION['signup_success']) && $_SESSION['signup_success'] === true) {
     echo "<script>alert('Successfully signed up!');</script>";
-    // Unset the session variable to prevent showing the message again on page refresh
+    // Izņem sesijas mainīgo, lai novērstu atkārtotu parādīšanos pārlādējot lapu
     unset($_SESSION['signup_success']);
 }
+
 
 // Check if the user is an admin
 if (isset($_SESSION['user_id'])) {
@@ -34,27 +35,13 @@ if (isset($_SESSION['user_id'])) {
 
     // Prepare and bind the SQL statement
     $stmt = $conn->prepare("SELECT is_admin FROM User WHERE id = ?");
-
-    // Pārbauda, vai sagatavošana bija veiksmīga
-    if ($stmt === false) {
-        die("Prepare failed: " . $conn->error);
-    }
-
-    $stmt->bind_param("i", $_SESSION['user_id']); // 'i' indicates the type of the parameter (integer)
-
-    // Execute the statement
+    $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
-
-    // Get the result
     $stmt->bind_result($is_admin);
     $stmt->fetch();
-
-    // Set the is_admin session variable based on the result
     $_SESSION['is_admin'] = ($is_admin == 1);
-
-    // Close the statement and connection
     $stmt->close();
-    $conn->close();
+
 } else {
     // Handle the case when the user is not logged in
 }
@@ -542,50 +529,70 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 <!-- reservation -->
 
 <section class="reservation" id="reservation">
-
     <h1 class="heading">book now</h1>
-
-    <form action="">
-
+    <form id="reservationForm" action="submit_reservation.php" method="post">
         <div class="container">
-
             <div class="box">
                 <p>name <span>*</span></p>
-                <input type="text" class="input" placeholder="Your Name">
+                <input type="text" name="name" class="input" placeholder="Your Name" required>
             </div>
-
             <div class="box">
                 <p>email <span>*</span></p>
-                <input type="text" class="input" placeholder="Your Email">
+                <input type="email" name="email" class="input" placeholder="Your Email" required>
             </div>
-
             <div class="box">
                 <p>check in <span>*</span></p>
-                <input type="date" class="input">
+                <input type="date" name="check_in" class="input" required>
             </div>
-
             <div class="box">
                 <p>check out <span>*</span></p>
-                <input type="date" class="input">
+                <input type="date" name="check_out" class="input" required>
             </div>
-
             <div class="box">
                 <label for="adults">Adults <span>*</span></label>
-                <?php generateSelectOptions("adult", 6); ?>
+                <select name="adults" class="input" required>
+                    <?php for ($i = 1; $i <= 6; $i++) {
+                        echo "<option value='$i'>$i</option>";
+                    } ?>
+                </select>
             </div>
-
             <div class="box">
                 <label for="children">Children <span>*</span></label>
-                <?php generateSelectOptions("child", 6, true); ?>
+                <select name="children" class="input" required>
+                    <?php for ($i = 0; $i <= 6; $i++) {
+                        echo "<option value='$i'>$i</option>";
+                    } ?>
+                </select>
             </div>
-
-
             <input type="submit" value="check availability" class="btn">
         </div>
-
     </form>
-
 </section>
+
+<script>
+    $(document).ready(function(){
+        $('#reservationForm').submit(function(event){
+            // Apturam formas nokļūšanu uz citu lapu
+            event.preventDefault();
+
+            // Veic asinhronu formas iesniegšanu izmantojot AJAX
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    // Ja rezervācija ir veiksmīga, rādiet paziņojumu
+                    alert('Reservation successful!');
+                },
+                error: function(xhr, status, error) {
+                    // Ja ir kļūda, rādiet kļūdas paziņojumu
+                    alert('Error: ' + error);
+                }
+            });
+        });
+    });
+
+</script>
 
 <!-- end -->
 

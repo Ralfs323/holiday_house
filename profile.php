@@ -124,6 +124,7 @@ $stmt->close();
         </select><br>
         <input type="submit" value="Submit Review">
     </form>
+    <a href="index.php">Back</a>
 
     <a href="auth/logout.php">Logout</a>
 </div>
