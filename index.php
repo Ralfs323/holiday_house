@@ -1,28 +1,15 @@
 <?php
 session_start();
 
-// Check if user is logged in
-if (isset($_SESSION['user_id'])) {
-    // User is logged in
+// Check if user is logged in and user_id is valid
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
+    // User is logged in and user_id is valid
     $user_id = $_SESSION['user_id'];
-    // You can perform actions for authenticated users here
+    // Perform actions that require user authentication here
     $buttonText = "Profile";
     $buttonAction = "profile.php"; // Change "#" to the URL of the user profile page
-} else {
-    // User is not logged in
-    $buttonText = "Login";
-    $buttonAction = "#";
-}
 
-if (isset($_SESSION['signup_success']) && $_SESSION['signup_success'] === true) {
-    echo "<script>alert('Successfully signed up!');</script>";
-    // Izņem sesijas mainīgo, lai novērstu atkārtotu parādīšanos pārlādējot lapu
-    unset($_SESSION['signup_success']);
-}
-
-
-// Check if the user is an admin
-if (isset($_SESSION['user_id'])) {
+    // Check if the user is an admin
     require_once("db/db.php");
 
     // Create connection
@@ -35,7 +22,7 @@ if (isset($_SESSION['user_id'])) {
 
     // Prepare and bind the SQL statement
     $stmt = $conn->prepare("SELECT is_admin FROM User WHERE id = ?");
-    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($is_admin);
     $stmt->fetch();
@@ -43,9 +30,22 @@ if (isset($_SESSION['user_id'])) {
     $stmt->close();
 
 } else {
-    // Handle the case when the user is not logged in
+    // User is not logged in or user_id is not valid
+    $buttonText = "Login";
+    $buttonAction = "#";
 }
 
+
+// Parādīt atbilstošu paziņojumu pēc veiksmīgas vai neveiksmīgas rezervācijas
+$successMessage = '';
+$errorMessage = '';
+
+if (isset($_GET['success']) && $_GET['success'] == 1) {
+    $successMessage = "Your reservation has been successfully confirmed!";
+} elseif (isset($_GET['error'])) {
+    $error = $_GET['error'];
+    $errorMessage = "Error: $error";
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +59,24 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        // Parāda veiksmīga rezervācijas paziņojumu, ja ir
+        <?php if ($successMessage): ?>
+        window.onload = function() {
+            alert("<?php echo $successMessage; ?>");
+        };
+        <?php endif; ?>
+
+        // Parāda kļūdas paziņojumu, ja ir
+        <?php if ($errorMessage): ?>
+        window.onload = function() {
+            alert("<?php echo $errorMessage; ?>");
+        };
+        <?php endif; ?>
+    </script>
 </head>
 <body>
 
@@ -526,27 +544,25 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
 
 <!-- end -->
 
-<!-- reservation -->
-
 <section class="reservation" id="reservation">
-    <h1 class="heading">book now</h1>
+    <h1 class="heading">Book Now</h1>
     <form id="reservationForm" action="submit_reservation.php" method="post">
         <div class="container">
             <div class="box">
-                <p>name <span>*</span></p>
+                <p>Name <span>*</span></p>
                 <input type="text" name="name" class="input" placeholder="Your Name" required>
             </div>
             <div class="box">
-                <p>email <span>*</span></p>
+                <p>Email <span>*</span></p>
                 <input type="email" name="email" class="input" placeholder="Your Email" required>
             </div>
             <div class="box">
-                <p>check in <span>*</span></p>
-                <input type="date" name="check_in" class="input" required>
+                <p>Check In <span>*</span></p>
+                <input type="text" name="check_in" id="check_in" class="input" required>
             </div>
             <div class="box">
-                <p>check out <span>*</span></p>
-                <input type="date" name="check_out" class="input" required>
+                <p>Check Out <span>*</span></p>
+                <input type="text" name="check_out" id="check_out" class="input" required>
             </div>
             <div class="box">
                 <label for="adults">Adults <span>*</span></label>
@@ -564,35 +580,60 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
                     } ?>
                 </select>
             </div>
-            <input type="submit" value="check availability" class="btn">
+            <input type="submit" value="Check Availability" class="btn">
         </div>
     </form>
 </section>
 
 <script>
-    $(document).ready(function(){
-        $('#reservationForm').submit(function(event){
-            // Apturam formas nokļūšanu uz citu lapu
-            event.preventDefault();
+    $(document).ready(function() {
+        // Initialize jQuery UI datepickers
+        $("#check_in").datepicker({
+            dateFormat: 'yy-mm-dd', // Iestatiet datumu formātu
+            minDate: 0,
+            onSelect: function(selectedDate) {
+                // Change minDate parameter for "check_out" field when "check_in" date is selected
+                $("#check_out").datepicker("option", "minDate", selectedDate);
+            },
+            beforeShowDay: function(date) {
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                // Check if the date is in the array of reserved dates, if so, disable it
+                return [availableDates.indexOf(string) == -1];
+            }
+        });
 
-            // Veic asinhronu formas iesniegšanu izmantojot AJAX
-            $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
-                data: $(this).serialize(),
-                success: function(response) {
-                    // Ja rezervācija ir veiksmīga, rādiet paziņojumu
-                    alert('Reservation successful!');
-                },
-                error: function(xhr, status, error) {
-                    // Ja ir kļūda, rādiet kļūdas paziņojumu
-                    alert('Error: ' + error);
-                }
-            });
+        $("#check_out").datepicker({
+            dateFormat: 'yy-mm-dd', // Iestatiet datumu formātu
+            minDate: 0,
+            onSelect: function(selectedDate) {
+                // Change maxDate parameter for "check_in" field when "check_out" date is selected
+                $("#check_in").datepicker("option", "maxDate", selectedDate);
+            },
+            beforeShowDay: function(date) {
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+                // Check if the date is in the array of reserved dates, if so, disable it
+                return [availableDates.indexOf(string) == -1];
+            }
+        });
+
+        // Create an array to store reserved dates
+        var availableDates = [];
+
+        // Get reserved dates from the server
+        $.ajax({
+            url: 'get_reserved_dates.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                // Store reserved dates in the array
+                availableDates = response.reserved_dates;
+            }
         });
     });
 
 </script>
+
+
 
 <!-- end -->
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Confirmation</title>
+</head>
+<body>
+<h1>Reservation Confirmation</h1>
+<p>Dear <?php echo $name; ?>,</p>
+<p>Your reservation has been successfully confirmed.</p>
+<p>Reservation details:</p>
+<ul>
+    <li>Name: <?php echo $name; ?></li>
+    <li>Email: <?php echo $email; ?></li>
+    <li>Check In: <?php echo $check_in; ?></li>
+    <li>Check Out: <?php echo $check_out; ?></li>
+    <li>Number of Adults: <?php echo $adults; ?></li>
+    <li>Number of Children: <?php echo $children; ?></li>
+</ul>
+<p>Thank you for choosing our service. We look forward to welcoming you!</p>
+</body>
+</html>
