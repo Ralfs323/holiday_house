@@ -482,7 +482,7 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
                         <i class="fas fa-quote-right"></i>
                         <p><?php echo $row_review['review_text']; ?></p>
                         <div class="user">
-                            <img src="images/<?php echo $row_review['user_image']; ?>" alt="">
+                            <img src="https://t3.ftcdn.net/jpg/03/58/90/78/360_F_358907879_Vdu96gF4XVhjCZxN2kCG0THTsSQi8IhT.jpg" alt="Stack Overflow logo and icons and such">
                             <div class="user-info">
                                 <h3><?php echo $row_review['user_name']; ?></h3>
                                 <div class="stars">
