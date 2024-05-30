@@ -227,9 +227,6 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
 
         </div>
 
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-
     </div>
 
 </section>
@@ -271,12 +268,12 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
         </div>
 
         <div class="box">
-            <label for="adults">Adults <span>*</span></label>
+            <p><label for="adults">Adults <span>*</span></label></p>
             <?php generateSelectOptions("adult", 6); ?>
         </div>
 
         <div class="box">
-            <label for="children">Children <span>*</span></label>
+            <p><label for="children">Children <span>*</span></label></p>
             <?php generateSelectOptions("child", 6, true); ?>
         </div>
 
@@ -565,7 +562,7 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
                 <input type="text" name="check_out" id="check_out" class="input" required>
             </div>
             <div class="box">
-                <label for="adults">Adults <span>*</span></label>
+                <p><label for="adults">Adults <span>*</span></label></p>
                 <select name="adults" class="input" required>
                     <?php for ($i = 1; $i <= 6; $i++) {
                         echo "<option value='$i'>$i</option>";
@@ -573,14 +570,14 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
                 </select>
             </div>
             <div class="box">
-                <label for="children">Children <span>*</span></label>
+                <p><label for="children">Children <span>*</span></label></p>
                 <select name="children" class="input" required>
                     <?php for ($i = 0; $i <= 6; $i++) {
                         echo "<option value='$i'>$i</option>";
                     } ?>
                 </select>
             </div>
-            <input type="submit" value="Check Availability" class="btn">
+            <input type="submit" value="Make a reservation" class="btn">
         </div>
     </form>
 </section>

@@ -70,6 +70,22 @@ $reservation_result = $stmt->get_result();
                     }
                 </script>
 
+                <!-- Pievieno rediģēšanas saiti ar atbilstošu rezervācijas ID -->
+                <a href="#edit_form_<?php echo $reservation['id']; ?>" onclick="showEditForm(<?php echo $reservation['id']; ?>)">Edit</a>
+                <!-- Rediģēšanas forma (sākotnēji paslēpta) -->
+                <div id="edit_form_<?php echo $reservation['id']; ?>" style="display: none;">
+                    <form method="post" action="update_reservation.php"> <!-- Action norāda uz failu, kurš apstrādās rediģēšanas datus -->
+                        <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
+                        <!-- Rediģējamie lauki -->
+                        <label for="adults_<?php echo $reservation['id']; ?>">Adults:</label>
+                        <input type="number" name="adults" id="adults_<?php echo $reservation['id']; ?>" value="<?php echo $reservation['adults']; ?>">
+                        <br>
+                        <label for="children_<?php echo $reservation['id']; ?>">Children:</label>
+                        <input type="number" name="children" id="children_<?php echo $reservation['id']; ?>" value="<?php echo $reservation['children']; ?>">
+                        <br>
+                        <input type="submit" value="Save">
+                    </form>
+                </div>
             </li>
         <?php endwhile; ?>
     </ul>
@@ -98,3 +114,15 @@ $reservation_result = $stmt->get_result();
 </div>
 </body>
 </html>
+
+<script>
+    // JavaScript funkcija, lai rādītu/ēnu rediģēšanas formu
+    function showEditForm(reservationId) {
+        var editForm = document.getElementById('edit_form_' + reservationId);
+        if (editForm.style.display === 'none') {
+            editForm.style.display = 'block';
+        } else {
+            editForm.style.display = 'none';
+        }
+    }
+</script>
