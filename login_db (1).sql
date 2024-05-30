@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Feb 15, 2024 at 09:18 PM
+-- Generation Time: May 30, 2024 at 08:13 AM
 -- Server version: 5.7.34
 -- PHP Version: 7.4.21
 
@@ -37,7 +37,7 @@ CREATE TABLE `about_us` (
 --
 
 INSERT INTO `about_us` (`id`, `content`) VALUES
-(1, 'dsdasdasd');
+(1, 'sdf');
 
 -- --------------------------------------------------------
 
@@ -68,6 +68,42 @@ CREATE TABLE `Gallery` (
   `id` int(11) NOT NULL,
   `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reservations`
+--
+
+CREATE TABLE `reservations` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `check_in` date NOT NULL,
+  `check_out` date NOT NULL,
+  `adults` int(11) NOT NULL,
+  `children` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `name`, `email`, `check_in`, `check_out`, `adults`, `children`, `user_id`) VALUES
+(1, 'janis', 'janis@example.com', '2024-03-29', '2024-03-31', 1, 0, 0),
+(2, 'janis', 'janis@example.com', '2024-03-28', '2024-03-29', 1, 0, 0),
+(3, 'janis', 'janis@example.com', '2024-03-29', '2024-03-30', 1, 0, 0),
+(4, 'janois', 'fdf\'@gds', '2024-04-04', '2024-04-06', 1, 0, 0),
+(5, 'fdfdf', 'fdfdf@rdf', '2024-04-08', '2024-04-09', 3, 0, 0),
+(6, 'dada', 'dsds@gthxd', '2024-04-10', '2024-04-11', 3, 3, 0),
+(7, 'fdfdf', 'adsd@fdhf', '2024-04-12', '2024-04-13', 1, 0, 0),
+(8, 'fdfdf', 'dsdsd@frgtg', '2024-04-14', '2024-04-15', 1, 0, 0),
+(9, 'dsdsd', 'sdsds@fdf', '2024-04-16', '2024-04-17', 1, 0, 0),
+(10, 'dsdsd', 'rutkovskis2004@gmail.com', '2024-04-21', '2024-04-23', 1, 0, 0),
+(11, 'janis', 'janis@example.com', '2024-04-28', '2024-04-30', 1, 0, 0),
+(13, '0', 'janis@example.com', '2024-04-18', '2024-04-19', 1, 0, 26),
+(14, '0', 'test@example.com', '2024-05-23', '2024-05-24', 2, 3, 24);
 
 -- --------------------------------------------------------
 
@@ -133,7 +169,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `name`, `surename`, `email`, `password_hash`, `is_admin`) VALUES
 (24, 'test', 'test', 'test@example.com', '$2y$10$4smBM8.0ljvePask6LPhOeI79yF/osn2AMKWaOGthfIXhd.sZ50lW', 1),
-(25, 'ralfs', 'Rut', 'ralfs@test.lv', '$2y$10$NCyCzrYUd/fbW9952hooDefYJOsedJp06.bNxnItutaH5YrXlttUu', 0);
+(25, 'ralfs', 'Rut', 'ralfs@test.lv', '$2y$10$NCyCzrYUd/fbW9952hooDefYJOsedJp06.bNxnItutaH5YrXlttUu', 0),
+(26, 'janis', 'janis', 'janis@example.com', '$2y$10$ZNLP.b0V/X9UeDtleQ83MuMayqLmaVsBstr5x3uTg3xlQeGsNzbJS', 0);
 
 --
 -- Indexes for dumped tables
@@ -155,6 +192,12 @@ ALTER TABLE `admin`
 -- Indexes for table `Gallery`
 --
 ALTER TABLE `Gallery`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `reservations`
+--
+ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -196,7 +239,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `Gallery`
 --
 ALTER TABLE `Gallery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reservations`
+--
+ALTER TABLE `reservations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `Reviews`
@@ -208,13 +257,13 @@ ALTER TABLE `Reviews`
 -- AUTO_INCREMENT for table `RoomPrices`
 --
 ALTER TABLE `RoomPrices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
