@@ -21,7 +21,7 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
     }
 
     // Prepare and bind the SQL statement
-    $stmt = $conn->prepare("SELECT is_admin FROM User WHERE id = ?");
+    $stmt = $conn->prepare("SELECT is_admin FROM user WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($is_admin);
