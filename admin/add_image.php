@@ -10,12 +10,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['
 // Add New Image to Gallery
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["gallery_image"]["name"])) {
     // Upload image file
-    $target_dir = "../images/";
+    $target_dir = __DIR__. "/images/";
     $target_file = $target_dir . basename($_FILES["gallery_image"]["name"]);
     move_uploaded_file($_FILES["gallery_image"]["tmp_name"], $target_file);
 
     // Insert data into database
-    $sql_insert_gallery = "INSERT INTO Gallery (image) VALUES ('$target_file')";
+    $sql_insert_gallery = "INSERT INTO Gallery (image) VALUES ('/admin/images/". ($_FILES["gallery_image"]["name"]). "')";
     if ($conn->query($sql_insert_gallery) === TRUE) {
         $success_message_gallery = "New image added to gallery successfully";
     } else {
