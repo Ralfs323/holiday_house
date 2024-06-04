@@ -100,8 +100,9 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                 <a href="admin/admin_dashboard.php" class="btn">Admin Dashboard</a>
             <?php endif; ?>
         <?php else : ?>
-            <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="btn">Login</button>
+            <button onclick="document.getElementById('id01').style.display='block'" class="btn">Login</button>
         <?php endif; ?>
+
         <div id="id01" class="modal">
             <form class="modal-content animate" action="index.php" method="post">
                 <div class="split-container">
@@ -123,7 +124,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                             </div>
 
                             <div id="register-container" hidden>
-                                <?php include "auth/signup.html"; ?>
+                                <?php include "auth/signup.php"; ?>
                                 <span id="modal-signup-button" onclick="switchModal()">Already have an account? Login</span>
                             </div>
                         </div>
@@ -207,23 +208,9 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
             <div class="swiper-slide slide" style="background: url(admin/images/picture1.jpg) no-repeat;">
                 <div class="content">
                     <h3>it's where dreams come true</h3>
-                    <a href="#" class="btn"> visit our offer</a>
                 </div>
             </div>
 
-            <div class="swiper-slide slide" style="background: url(admin/images/picture2.jpg) no-repeat;">
-                <div class="content">
-                    <h3>it's where dreams come true</h3>
-                    <a href="#" class="btn"> visit our offer</a>
-                </div>
-            </div>
-
-            <div class="swiper-slide slide" style="background: url(admin/images/picture3.jpg) no-repeat;">
-                <div class="content">
-                    <h3>it's where dreams come true</h3>
-                    <a href="#" class="btn"> visit our offer</a>
-                </div>
-            </div>
 
         </div>
 
@@ -660,10 +647,7 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
         <div class="box">
             <h3>extra links</h3>
             <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
+
         </div>
 
     </div>
