@@ -1,0 +1,120 @@
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #007bff;
+    font-size: 2.5rem;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+/* Form styles */
+form {
+    margin-top: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="submit"], .button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover, .button:hover {
+    background-color: #0056b3;
+}
+
+/* Reservation item styles */
+.reservation-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.reservation-item article p {
+    margin-bottom: 8px;
+}
+
+.edit-form {
+    display: none;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.edit-form.visible {
+    display: block;
+}
+
+/* Review section */
+.review {
+    margin-top: 40px;
+}
+
+.review textarea,
+.review select {
+    width: calc(100% - 22px); /* Adjust for padding */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+/* Button styles */
+.button.secondary {
+    background-color: #6c757d;
+}
+
+.button.secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .reservation-item {
+        padding: 15px;
+    }
+}
