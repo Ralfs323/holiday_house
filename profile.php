@@ -1,21 +1,17 @@
+
 <?php
 session_start();
 
-// Iekļauj datubāzes konfigurāciju
+// Include database configuration
 require_once __DIR__ . "/db/db.php";
 
-// Pārbauda, vai lietotājs ir autorizējies
+// Check if user is authorized
 if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
 
-// Pārbauda, vai datubāzes savienojums ir veiksmīgs
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-// Izgūst lietotāja datus no datubāzes
+// Fetch user data from database
 $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
 if ($stmt === false) {
@@ -25,16 +21,15 @@ $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Ja lietotājs nav atrasts, izvada kļūdas ziņojumu un beidz skriptu
+// If user is not found, display error message and exit script
 if ($result->num_rows === 0) {
-    echo "Error: User data not found";
-    exit();
+    die("Error: User data not found");
 }
 
 $user = $result->fetch_assoc();
 $stmt->close();
 
-// Izgūst rezervāciju datus no datubāzes, kas saistīti ar šo lietotāju
+// Fetch reservations data related to this user
 $stmt = $conn->prepare("SELECT * FROM reservations WHERE user_id = ?");
 if ($stmt === false) {
     die("Error: " . $conn->error);
@@ -51,7 +46,6 @@ $reservation_result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <style>
-        /* Reset and base styles */
         body {
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
@@ -195,7 +189,6 @@ $reservation_result = $stmt->get_result();
                 <div id="edit_form_<?php echo htmlspecialchars($reservation['id']); ?>" class="edit-form">
                     <form method="post" action="update_reservation.php">
                         <input type="hidden" name="reservation_id" value="<?php echo htmlspecialchars($reservation['id']); ?>">
-                        <!-- Editable fields -->
                         <label for="adults_<?php echo htmlspecialchars($reservation['id']); ?>">Adults:</label>
                         <input type="number" name="adults" id="adults_<?php echo htmlspecialchars($reservation['id']); ?>" value="<?php echo htmlspecialchars($reservation['adults']); ?>">
                         <br>
@@ -209,9 +202,8 @@ $reservation_result = $stmt->get_result();
         <?php endwhile; ?>
     </ul>
 
-
-    <!-- Form to submit a review -->
-    <form method="post" action="submit_review.php">
+    <!-- Review submission form -->
+    <form method="post" action="">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
         <label for="review_text">Your Review:</label><br>
         <textarea id="review_text" name="review_text" rows="4" cols="50" required></textarea><br>
@@ -226,7 +218,7 @@ $reservation_result = $stmt->get_result();
         <input type="submit" value="Submit Review" class="button">
     </form>
 
-    <!-- Buttons to go back to the home page or log out -->
+    <!-- Navigation buttons -->
     <div style="text-align: center; margin-top: 20px;">
         <a href="index.php" class="button secondary">Back</a>
         <a href="auth/logout.php" class="button secondary">Logout</a>
@@ -271,6 +263,7 @@ $reservation_result = $stmt->get_result();
 </html>
 
 <?php
-// Close the database connection
+// Close database connection
 $conn->close();
 ?>
+
