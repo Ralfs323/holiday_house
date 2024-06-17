@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <div>
         <label for="surname">Surname</label>
-        <input type="text" id="surname" name="surname" value="<?php echo isset($_POST["surname"]) ? $_POST["surname"] : ''; ?>">
+        <input type="text" id="surname" name="surname" value="<?php echo isset($_POST["surename"]) ? $_POST["surename"] : ''; ?>">
     </div>
 
     <div>
