@@ -1,48 +1,70 @@
 <?php
 session_start();
 
-if (empty($_POST["name"])) {
-    die("Name is required");
+// Validate and sanitize inputs
+$name = htmlspecialchars($_POST["name"]);
+$surname = htmlspecialchars($_POST["surname"]);
+$email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
+$password = $_POST["password"];
+$password_confirmation = $_POST["password_confirmation"];
+
+// Basic input validation
+$errors = [];
+
+if (empty($name)) {
+    $errors[] = "Name is required";
 }
 
-if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
-    die("Valid email is required");
+if (empty($surname)) {
+    $errors[] = "Surname is required";
 }
 
-if (strlen($_POST["password"]) < 8) {
-    die("Password must be at least 8 characters");
+if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors[] = "Valid email is required";
 }
 
-if (!preg_match("/[a-z]/i", $_POST["password"])) {
-    die("Password must contain at least one letter");
+if (strlen($password) < 8) {
+    $errors[] = "Password must be at least 8 characters";
 }
 
-if (!preg_match("/[0-9]/", $_POST["password"])) {
-    die("Password must contain at least one number");
+if (!preg_match("/[a-zA-Z]/", $password)) {
+    $errors[] = "Password must contain at least one letter";
 }
 
-if ($_POST["password"] !== $_POST["password_confirmation"]) {
-    die("Passwords must match");
+if (!preg_match("/[0-9]/", $password)) {
+    $errors[] = "Password must contain at least one number";
 }
 
-$password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
+if ($password !== $password_confirmation) {
+    $errors[] = "Passwords do not match";
+}
 
-$mysqli = require __DIR__ . "/../db/db.php";
+// If there are errors, display them and exit
+if (!empty($errors)) {
+    foreach ($errors as $error) {
+        echo $error . "<br>";
+    }
+    exit;
+}
 
+// Hash the password
+$password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+// Database connection (replace with your own connection details)
+$mysqli = new mysqli("localhost", "username", "password", "database");
+
+// Check connection
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+// Prepare SQL statement
 $sql = "INSERT INTO user (name, surename, email, password_hash)
         VALUES (?, ?, ?, ?)";
-
 $stmt = $mysqli->prepare($sql);
 
-if (!$stmt) {
-    die("SQL error: " . $mysqli->error);
-}
-
-$stmt->bind_param("ssss",
-    $_POST["name"],
-    $_POST["surename"],
-    $_POST["email"],
-    $password_hash);
+// Bind parameters and execute statement
+$stmt->bind_param("ssss", $name, $surname, $email, $password_hash);
 
 if ($stmt->execute()) {
     // Signup success
@@ -51,9 +73,15 @@ if ($stmt->execute()) {
     exit;
 } else {
     if ($mysqli->errno === 1062) {
-        die("Email already taken");
+        // Duplicate entry error (email already taken)
+        echo "Email already taken";
     } else {
-        die($mysqli->error . " " . $mysqli->errno);
+        // Other SQL error
+        echo "SQL error: " . $mysqli->error;
     }
 }
+
+// Close statement and connection
+$stmt->close();
+$mysqli->close();
 ?>

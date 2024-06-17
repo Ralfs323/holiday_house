@@ -12,9 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $description = $_POST["description"];
 
         // Failu augšupielāde
-        $target_dir = "admin/images/";
+        $target_dir = __DIR__. "/images/";
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
-        $uploadOk = 1;
+        move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
 
         // Pārbaudām, vai fails ir attiecīgā formāta un izmēra
         $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
