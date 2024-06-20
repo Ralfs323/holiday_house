@@ -41,54 +41,65 @@ if (!$result_reviews) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Reviews</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="admin-style.css">
+    <style>
+
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>Admin Reviews</h1>
 
     <?php if(isset($success_message)): ?>
-        <div class="success-alert"><?php echo $success_message; ?></div>
+        <div class="alert alert-success"><?php echo $success_message; ?></div>
     <?php endif; ?>
 
     <?php if(isset($error_message)): ?>
-        <div class="error"><?php echo $error_message; ?></div>
+        <div class="alert alert-danger"><?php echo $error_message; ?></div>
     <?php endif; ?>
 
-    <table>
-        <tr>
-            <th>Review ID</th>
-            <th>Review Text</th>
-            <th>Rating</th>
-            <th>User Name</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        <?php if ($result_reviews->num_rows > 0): ?>
-            <?php while($row_review = $result_reviews->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo $row_review["id"]; ?></td>
-                    <td><?php echo $row_review["review_text"]; ?></td>
-                    <td><?php echo $row_review["rating"]; ?></td>
-                    <td><?php echo $row_review["user_name"]; ?></td>
-                    <td><?php echo $row_review["status"]; ?></td>
-                    <td>
-                        <form method="post">
-                            <input type="hidden" name="review_id" value="<?php echo $row_review["id"]; ?>">
-                            <select name="action">
-                                <option value="pending" <?php if ($row_review["status"] === "pending") echo "selected"; ?>>Pending</option>
-                                <option value="approved" <?php if ($row_review["status"] === "approved") echo "selected"; ?>>Approved</option>
-                                <option value="rejected" <?php if ($row_review["status"] === "rejected") echo "selected"; ?>>Rejected</option>
-                            </select>
-                            <button type="submit">Update Status</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <tr><td colspan="6">No reviews found</td></tr>
-        <?php endif; ?>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Review ID</th>
+                <th>Review Text</th>
+                <th>Rating</th>
+                <th>User Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if ($result_reviews->num_rows > 0): ?>
+                <?php while($row_review = $result_reviews->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row_review["id"]; ?></td>
+                        <td><?php echo $row_review["review_text"]; ?></td>
+                        <td><?php echo $row_review["rating"]; ?></td>
+                        <td><?php echo $row_review["user_name"]; ?></td>
+                        <td><?php echo $row_review["status"]; ?></td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="review_id" value="<?php echo $row_review["id"]; ?>">
+                                <select name="action" class="form-control">
+                                    <option value="pending" <?php if ($row_review["status"] === "pending") echo "selected"; ?>>Pending</option>
+                                    <option value="approved" <?php if ($row_review["status"] === "approved") echo "selected"; ?>>Approved</option>
+                                    <option value="rejected" <?php if ($row_review["status"] === "rejected") echo "selected"; ?>>Rejected</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Update Status</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr><td colspan="6">No reviews found</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

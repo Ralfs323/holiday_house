@@ -641,15 +641,6 @@ function generateSelectOptions($name, $max, $includeNoOption = false) {
         </div>
 
         <div class="box">
-            <h3>quick links</h3>
-            <a href="#"> <i class="fas fa-arrow-right"></i> home</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> about</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> prices</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> gallery</a>
-            <a href="#"> <i class="fas fa-arrow-right"></i> reservation</a>
-        </div>
-
-        <div class="box">
             <h3>extra links</h3>
             <a href="#"> <i class="fas fa-arrow-right"></i> refund policy</a>
 
