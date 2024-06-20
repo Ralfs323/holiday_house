@@ -34,6 +34,11 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== null) {
     $buttonText = "Login";
     $buttonAction = "#";
 }
+if (isset($_SESSION['signup_success']) && $_SESSION['signup_success']) {
+    echo "<p>Registration successful! You are now logged in.</p>";
+    // Unset session variables after displaying the message
+    unset($_SESSION['signup_success']);
+}
 
 
 // Parādīt atbilstošu paziņojumu pēc veiksmīgas vai neveiksmīgas rezervācijas

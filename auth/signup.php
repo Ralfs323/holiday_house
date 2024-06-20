@@ -44,8 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Proceed only if no validation errors
     if(!$is_invalid) {
-        // Your existing signup logic goes here
-        // ...
+        header("Location: /auth/process-signup.php?" . http_build_query($_POST));
+        exit;
     }
 }
 ?>
@@ -63,22 +63,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <h1>Signup</h1>
 
     <?php if ($is_invalid): ?>
-    <p><em><?php echo $signup_error; ?></em></p>
+        <p><em><?php echo $signup_error; ?></em></p>
     <?php endif; ?>
 
     <div>
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" value="<?php echo isset($_POST["name"]) ? $_POST["name"] : ''; ?>">
+        <input type="text" id="name" name="name" value="<?php echo isset($_POST["name"]) ? htmlspecialchars($_POST["name"]) : ''; ?>">
     </div>
 
     <div>
         <label for="surname">Surname</label>
-        <input type="text" id="surname" name="surname" value="<?php echo isset($_POST["surename"]) ? $_POST["surename"] : ''; ?>">
+        <input type="text" id="surname" name="surname" value="<?php echo isset($_POST["surname"]) ? htmlspecialchars($_POST["surname"]) : ''; ?>">
     </div>
 
     <div>
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="<?php echo isset($_POST["email"]) ? $_POST["email"] : ''; ?>">
+        <input type="email" id="email" name="email" value="<?php echo isset($_POST["email"]) ? htmlspecialchars($_POST["email"]) : ''; ?>">
     </div>
 
     <div>
